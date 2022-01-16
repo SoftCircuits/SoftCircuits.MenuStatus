@@ -10,6 +10,29 @@
     <Company>SoftCircuits</Company>
     <Description>A simple component for WinForms that provides an event for whenever the current menu selection changes. Designed to make it easy to display a status description for each menu command as it's highlighted.</Description>
     <Copyright>Copyright © 2022 SoftCircuits</Copyright>
+    <PackageIcon>Logo_64x64.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.MenuStatus</RepositoryUrl>
+    <PackageReleaseNotes>Initial version.</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageTags>menu-status menu winforms menu-description status component menustatus</PackageTags>
+    <PackageProjectUrl>https://www.nuget.org/packages/SoftCircuits.MenuStatus</PackageProjectUrl>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\Logo_64x64.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
