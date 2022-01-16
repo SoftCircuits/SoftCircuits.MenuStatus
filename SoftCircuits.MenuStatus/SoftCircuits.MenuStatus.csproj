@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Jonathan Wood</Authors>
+    <Company>SoftCircuits</Company>
+    <Description>A simple component for WinForms that provides an event for whenever the current menu selection changes. Designed to make it easy to display a status description for each menu command as it's highlighted.</Description>
+    <Copyright>Copyright © 2022 SoftCircuits</Copyright>
+  </PropertyGroup>
+
+</Project>
