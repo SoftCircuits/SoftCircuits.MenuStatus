@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SoftCircuits.MenuStatus
 {
+    [Description("Simple component to provide events as menu items are selected.")]
     public partial class MenuStatus : Component
     {
         private readonly HashSet<MenuStrip> AttachedMenuStrips = new();
-        private ToolStripItem? SelectedMenuItem = null;
+        private ToolStripItem? SelectedToolStripItem = null;
 
-        [Description("Gets or sets whether menu item tool tips are disabled on MenuStrips attached to this component. Allows you to use the ToolTipText property to hold status text.")]
+        [Description("Gets or sets whether menu item tool tips are disabled on MenuStrips attached to this component. Set to true when using the ToolTipText property to hold status text.")]
         [Category("Behavior")]
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -17,11 +19,17 @@ namespace SoftCircuits.MenuStatus
         [Description("Occurs when the selected menu item has changed.")]
         public event EventHandler<SelectedMenuItemChangedArgs>? SelectedMenuItemChanged;
 
+        /// <summary>
+        /// Initializes a new <see cref="MenuStatus"/> instance.
+        /// </summary>
         public MenuStatus()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Initializes a new <see cref="MenuStatus"/> instance.
+        /// </summary>
         public MenuStatus(IContainer container)
         {
             container.Add(this);
@@ -49,9 +57,11 @@ namespace SoftCircuits.MenuStatus
         /// </remarks>
         public void AttachMenuStrip(MenuStrip menuStrip)
         {
+            // Detach this menu strip if already attached
             if (AttachedMenuStrips.Contains(menuStrip))
                 DetachMenuStrip(menuStrip);
-
+            // Attach menu strip
+            Debug.Assert(!AttachedMenuStrips.Contains(menuStrip));
             AttachToolStrip(menuStrip);
             //menuStrip.MenuActivate += MenuStrip_MenuActivate;
             menuStrip.MenuDeactivate += MenuStrip_MenuDeactivate;
@@ -64,17 +74,19 @@ namespace SoftCircuits.MenuStatus
         /// </summary>
         /// <param name="menuStrip">The <see cref="MenuStrip"/> to detach.</param>
         /// <remarks>
-        /// Safely handles attempts to detach a <see cref="MenuStrip"/> that was
-        /// never attached.
+        /// This method simply returns if <paramref name="menuStrip"/> is not
+        /// attached.
         /// </remarks>
         public void DetachMenuStrip(MenuStrip menuStrip)
         {
+            // Only detach if menu strip is attached
             if (AttachedMenuStrips.Contains(menuStrip))
             {
                 DetachToolStrip(menuStrip);
                 //menuStrip.MenuActivate -= MenuStrip_MenuActivate;
                 menuStrip.MenuDeactivate -= MenuStrip_MenuDeactivate;
                 AttachedMenuStrips.Remove(menuStrip);
+                Debug.Assert(!AttachedMenuStrips.Contains(menuStrip));
             }
         }
 
@@ -83,20 +95,25 @@ namespace SoftCircuits.MenuStatus
         /// </summary>
         public void DetachAll()
         {
+            // Detach all attached menu strips.
             List<MenuStrip> attachedMenuStrips = AttachedMenuStrips.ToList();
             foreach (MenuStrip menuStrip in attachedMenuStrips)
                 DetachMenuStrip(menuStrip);
+            Debug.Assert(AttachedMenuStrips.Count == 0);
         }
+
+        /// <summary>
+        /// Gets the currently selected menu item. Returns null if no menu item
+        /// is currently selected.
+        /// </summary>
+        public ToolStripItem? SelectedMenuItem => SelectedToolStripItem;
 
         /// <summary>
         /// Raises the <see cref="SelectedMenuItemChanged"/> event.
         /// </summary>
         public virtual void OnSelectedMenuItemChanged()
         {
-            SelectedMenuItemChangedArgs args = new()
-            {
-                SelectedMenuItem = SelectedMenuItem
-            };
+            SelectedMenuItemChangedArgs args = new(SelectedToolStripItem);
             SelectedMenuItemChanged?.Invoke(this, args);
         }
 
@@ -104,8 +121,11 @@ namespace SoftCircuits.MenuStatus
 
         #region Helper methods
 
-        // Sets event handlers and properties of a ToolStrip in order to respond
-        // to the selected menu item changing.
+        /// <summary>
+        /// Sets event handlers and properties of a ToolStrip in order to respond
+        /// to the selected menu item changing.
+        /// </summary>
+        /// <param name="toolStrip"></param>
         private void AttachToolStrip(ToolStrip toolStrip)
         {
             if (DisableMenuToolTips)
@@ -122,14 +142,18 @@ namespace SoftCircuits.MenuStatus
             }
         }
 
-        // Undoes what is done by AttachToolStrip().
+        /// <summary>
+        /// Undoes what is done by AttachToolStrip().
+        /// </summary>
         private void DetachToolStrip(ToolStrip toolStrip)
         {
-            toolStrip.ShowItemToolTips = true;
+            if (DisableMenuToolTips)
+                toolStrip.ShowItemToolTips = true;
             toolStrip.KeyUp -= ToolStrip_KeyUp;
             foreach (ToolStripItem toolStripItem in toolStrip.Items)
             {
-                toolStripItem.AutoToolTip = true;
+                if (DisableMenuToolTips)
+                    toolStripItem.AutoToolTip = true;
                 toolStripItem.MouseEnter -= ToolStripItem_MouseEnter;
                 toolStripItem.MouseLeave -= ToolStripItem_MouseLeave;
                 if (toolStripItem is ToolStripDropDownItem dropDownItem)
@@ -137,12 +161,16 @@ namespace SoftCircuits.MenuStatus
             }
         }
 
-        // Updates the currently selected menu item.
+        /// <summary>
+        /// Updates <see cref="SelectedToolStripItem"/> and fires the
+        /// <see cref="SelectedMenuItemChanged"/> event if the selected item has changed.
+        /// </summary>
+        /// <param name="item"></param>
         private void SetSelectedMenuItem(ToolStripItem? item)
         {
-            if (!ReferenceEquals(item, SelectedMenuItem))
+            if (!ReferenceEquals(item, SelectedToolStripItem))
             {
-                SelectedMenuItem = item;
+                SelectedToolStripItem = item;
                 OnSelectedMenuItemChanged();
             }
         }
@@ -180,10 +208,9 @@ namespace SoftCircuits.MenuStatus
         {
             if (sender is ToolStripDropDownMenu dropDownMenu)
             {
-                ToolStripMenuItem? menuItem = dropDownMenu.Items.OfType<ToolStripMenuItem>()
+                SetSelectedMenuItem(dropDownMenu.Items.OfType<ToolStripMenuItem>()
                     .Where(m => m.Selected)
-                    .FirstOrDefault();
-                SetSelectedMenuItem(menuItem);
+                    .FirstOrDefault());
             }
         }
 

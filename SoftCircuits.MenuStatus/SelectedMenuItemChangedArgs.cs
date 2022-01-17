@@ -16,5 +16,21 @@ namespace SoftCircuits.MenuStatus
         /// </summary>
         [MemberNotNullWhen(true)]
         public bool HasSelectedItem => SelectedMenuItem != null;
+
+        /// <summary>
+        /// Constructs a new <see cref="SelectedMenuItemChangedArgs"/> instance.
+        /// </summary>
+        public SelectedMenuItemChangedArgs()
+        {
+            SelectedMenuItem = null;
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="SelectedMenuItemChangedArgs"/> instance.
+        /// </summary>
+        public SelectedMenuItemChangedArgs(ToolStripItem? selectedMenuItem)
+        {
+            SelectedMenuItem = selectedMenuItem; ;
+        }
     }
 }

@@ -10,6 +10,12 @@ namespace TestMenuStatus
             menuStatus1.AttachMenuStrip(menuStrip2);
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Not needed but confirm no errors
+            menuStatus1.DetachAll();
+        }
+
         private void btnAddSubmenu_Click(object sender, EventArgs e)
         {
             ToolStripItemCollection toolStripItems = submenusToolStripMenuItem.DropDownItems;
