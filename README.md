@@ -49,14 +49,14 @@ private void menuStatus1_SelectedMenuItemChanged(object sender, MenuStatusContro
 
 The code above works. However, because we used the `ToolTipText` property, menu tool tips now pop up as we hover over menu items. Chances are, you don't want to display both a description in the status bar and also a description in a tool tip.
 
-This is easily remedied by setting the `DisableMenuToolTips` property to `true`. This must be done *before* you call `AttachMenuStrip()`. You can also set this property in the designer. (You could also go through and manually set the `ShowItemToolTips` property of all `ToolStrip` controls and the `AutoToolTip` property of all the `ToolStripItem` controls. We don't recommend that.)
+This is easily remedied by setting the `DisableMenuToolTips` property to `true`. This must be done *before* you call `AttachMenuStrip()` so it is recommended that you set this property in the designer. (You could also go through and manually set the `ShowItemToolTips` property of all `ToolStrip` controls and the `AutoToolTip` property of all `ToolStripItem` controls but that is not recommended.)
 
-Now, those tool tips no longer appear.
+Now the tool tips no longer appear.
 
 ## Calling `AttachMenuStrip()` More than Once
 
-MenuStatus tracks the MenuStrips that are attached so you can safely call `AttachMenuStrip()` or `DetachMenuStrip()` multiple times.
+MenuStatus tracks which MenuStrips are attached so you can safely call `AttachMenuStrip()` or `DetachMenuStrip()` multiple times.
 
 Calling `AttachMenuStrip()` more than once (without calling `DetachMenuStrip()`) causes the `MenuStrip` to be detached and then reattached. This is useful if you have added new menu items to the menu. You will need to call `AttachMenuStrip()` again to have it recognize those new menu items.
 
-Calling `DetachMenuStrip()` more than once (without calling `AttachMenuStrip()`) has no effect. Attempts to detach a `MenuStrip` that is not attached are ignored.
+Calling `DetachMenuStrip()` more than once (without calling `AttachMenuStrip()`) has no effect. Attempts to detach a `MenuStrip` that is not attached are simply ignored.
