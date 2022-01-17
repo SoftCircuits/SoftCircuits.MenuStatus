@@ -13,11 +13,12 @@
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/SoftCircuits/SoftCircuits.MenuStatus</RepositoryUrl>
-    <PackageReleaseNotes>Initial version.</PackageReleaseNotes>
+    <PackageReleaseNotes>Component now tracks which MenuStrips have been added and intelligently handles attempts to attach or detach them more than once; Added DetachAll() method; Removed unused event handler.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageTags>menu-status menu winforms menu-description status component menustatus</PackageTags>
     <PackageProjectUrl>https://www.nuget.org/packages/SoftCircuits.MenuStatus</PackageProjectUrl>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
